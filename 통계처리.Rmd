@@ -1,0 +1,46 @@
+---
+title: "통계처리예시"
+author: "TADA-DATA"
+date: "2022-11-19"
+output: html_document
+---
+
+```{r}
+# 시, 군 별로 출산율 및 인구증가율, 노령인구비율등을 봤던 실습을 참고해 주세요
+
+#2021년과 2020년의 이용자
+#moonBook::acs에서 성별에 따라 나이를 확인하겠다와 같은 느낌
+#이산형 데이터라고 생각
+
+users2 <- read.csv("users2.csv", header=T)
+View(users2)
+
+wilcox.test(value~year, data=users2)
+
+
+
+# 국어성적과 영어성적사이에 관계가 있는지와 같은 느낌
+#3_correlation에 실습2 주제 : 인구 증가율과 노령 인구 비율간의 관계가 있는가? 참고
+# 이산형 데이터라고 생각
+
+moviechange <- read.csv("moviechange.csv", header=T)
+View(moviechange)
+
+cor(moviechange$OTT영화시청증감률, moviechange$여가영화관증감률, method="pearson")
+
+cor.test(moviechange$OTT영화시청증감률, moviechange$여가영화관증감률, method="pearson")
+#양의 상관관계? >> 70세이상 영향인듯
+
+plot(moviechange$OTT영화시청증감률, moviechange$여가영화관증감률)
+
+
+
+library(dplyr)
+
+moviechange1 <- moviechange %>% filter(!moviechange$index=="70세이상")
+
+plot(moviechange1$OTT영화시청증감률, moviechange1$여가영화관증감률)
+
+cor.test(moviechange1$OTT영화시청증감률, moviechange1$여가영화관증감률, method="pearson")
+```
+
