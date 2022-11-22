@@ -1,0 +1,75 @@
+---
+title: "통계처리_상관관계"
+author: "TADA-DATA_T"
+date: "2022-11-22"
+output: html_document
+---
+
+```{r}
+moviechange <- read.csv("moviechange.csv", header=T)
+View(moviechange)
+
+cor(moviechange$OTT영화시청증감률, moviechange$여가영화관증감률, method="pearson")
+
+cor.test(moviechange$OTT영화시청증감률, moviechange$여가영화관증감률, method="pearson")
+#양의 상관관계? >> 70세이상 영향인듯
+
+plot(moviechange$OTT영화시청증감률, moviechange$여가영화관증감률)
+
+
+
+library(dplyr)
+
+moviechange1 <- moviechange %>% filter(!moviechange$index=="70세이상")
+
+plot(moviechange1$OTT영화시청증감률, moviechange1$여가영화관증감률)
+
+cor.test(moviechange1$OTT영화시청증감률, moviechange1$여가영화관증감률, method="pearson")
+```
+
+
+
+# 통계처리
+```{r}
+moviechange <- read.csv("moviechange.csv", header=T)
+View(moviechange)
+
+```
+
+## 연령별 데이터만 확인
+```{r}
+library(dplyr)
+moviechange_age <- moviechange[1:7,]
+
+cor(moviechange_age$OTT영화시청증감률, moviechange_age$여가영화관증감률, method="pearson")
+
+cor.test(moviechange_age$OTT영화시청증감률, moviechange_age$여가영화관증감률, method="pearson")
+
+moviechange2 <- moviechange_age %>% filter(!moviechange_age$index=="70세이상")
+
+plot(moviechange2$OTT영화시청증감률, moviechange2$여가영화관증감률)
+
+cor.test(moviechange2$OTT영화시청증감률, moviechange2$여가영화관증감률, method="spearman")
+
+```
+
+
+### 파워검정
+```{r}
+
+library(pwr)
+mean1 <- mean(moviechange2$OTT영화시청증감률) 
+mean2 <- mean(moviechange2$여가영화관증감률)
+cat(mean1, mean2)
+
+std1 <- sd(moviechange2$OTT영화시청증감률)
+std2 <- sd(moviechange2$여가영화관증감률)
+cat(std1, std2)
+
+effective_size <- abs(mean1-mean2)/sqrt((std1^2+std2^2)/2)
+effective_size
+
+pwr.t.test(d=effective_size, sig.level = .05, power = .8 , type = "two.sample", alternative = "two.sided")
+
+```
+
